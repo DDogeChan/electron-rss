@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import "./feeds.js";
+import { fetchFeed } from "./feeds.js";
 import { resolve } from "url";
 import { __await } from "tslib";
 
@@ -44,6 +44,9 @@ function createWindow() {
   mainWindow.webContents.on("did-finish-load", () => {
     mainWindow.webContents.send("ping", "whoooooooh!");
   });
+  mainWindow.on("resize", () => {
+    mainWindow.webContents.send("resize", mainWindow.getSize());
+  });
 }
 
 app.on("ready", createWindow);
@@ -66,9 +69,14 @@ function sleep(ms) {
 
 ipcMain.on("pong", (e, data) => {
   console.log(data);
+
   async function sendping() {
     let res = await sleep(1000);
     //e.sender.send("ping", "ping from main");
+    let feed = await fetchFeed("https://www.v2ex.com/index.xml");
+    console.log(feed.items.length);
+    e.sender.send("feed", feed.items);
+    console.log("sendping end");
   }
   sendping();
 });
