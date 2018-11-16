@@ -24,9 +24,9 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 760,
     useContentSize: true,
-    width: 1000
+    width: 1280
     // frame: false
   });
 
@@ -69,16 +69,22 @@ function sleep(ms) {
 
 ipcMain.on("pong", (e, data) => {
   console.log(data);
-
   async function sendping() {
     let res = await sleep(1000);
     //e.sender.send("ping", "ping from main");
     let feed = await fetchFeed("https://www.v2ex.com/index.xml");
     console.log(feed.items.length);
     e.sender.send("feed", feed.items);
-    console.log("sendping end");
   }
   sendping();
+});
+
+ipcMain.on("fetchFeed", (e, data) => {
+  async function fetch() {
+    let feed = await fetchFeed(data);
+    e.sender.send("feed", feed.items);
+  }
+  fetch();
 });
 /**
  * Auto Updater
