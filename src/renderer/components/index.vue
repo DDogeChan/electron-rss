@@ -10,7 +10,9 @@
             <v-list-tile-action>
               <v-img :src="getFavicon(item.src)" max-width="16px" position="left center"></v-img>
             </v-list-tile-action>
-            <v-list-tile-content>{{item.title}}</v-list-tile-content>
+            <v-list-tile-content>
+              <v-badge v-if="feedCount[item.feed]>0" color="grey"><span slot="badge">{{feedCount[item.feed]}}</span><span v-show="1">{{item.title}}</span></v-badge><span v-else>{{item.title}}</span>
+            </v-list-tile-content>
           </v-list-tile>
           <!-- <v-divider v-if="index + 1 < sites.length" :key="`site-${index}`"></v-divider> -->
         </template>
@@ -71,7 +73,8 @@ export default {
       ],
       acticles: [],
       listHeight: "760px",
-      curFeed: ""
+      curFeed: "",
+      feedCount: {}
     };
   },
   methods: {
@@ -99,6 +102,7 @@ export default {
     this.$electron.ipcRenderer.on("feed", (e, data) => {
       console.log(data);
       this.acticles = data;
+      this.feedCount[this.curFeed] = this.acticles.length;
     });
     this.$electron.ipcRenderer.on("resize", (e, data) => {
       this.listHeight = data[1] + "px";
