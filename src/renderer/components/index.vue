@@ -46,10 +46,11 @@
               <v-icon>delete</v-icon>
             </v-btn>
           </v-speed-dial>
-          <v-progress-linear v-show="this.$store.getters.isLoading" id="loadbar" :indeterminate="true" height="5"></v-progress-linear>
+
         </v-layout>
       </v-container>
     </v-content>
+    <v-progress-linear v-show="this.$store.getters.isLoading" id="loadbar" :indeterminate="true" height="5"></v-progress-linear>
   </v-app>
 </template>
 <script>
@@ -168,6 +169,7 @@ export default {
   position: fixed;
   top: 100%;
   margin-top: -5px;
+  z-index: 99;
 }
 </style>
 
