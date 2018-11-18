@@ -53,6 +53,7 @@
   </v-app>
 </template>
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "landing-page",
   data() {
@@ -95,9 +96,10 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["setLoadingState"]),
     didfinishload() {
       // console.log("didfinishload");
-      this.$store.dispatch("setLoadingState", false);
+      this.setLoadingState(false);
     },
     getFavicon(domain) {
       return (
@@ -108,26 +110,23 @@ export default {
     acticleClick(index) {
       this.webViewSrc = this.acticles[index].link;
       console.log("click:" + this.webViewSrc);
-      this.$store.dispatch("setLoadingState", true);
+      this.setLoadingState(true);
     },
     siteItemClick(index) {
       //this.webViewSrc = this.sites[index].src;
       this.curFeed = this.sites[index].feed;
       this.$electron.ipcRenderer.send("fetchFeed", this.curFeed);
-      //this.$store.dispatch({ type: "setLoadingState", isBusy: true });
-      this.$store.dispatch("setLoadingState", true);
+      this.setLoadingState(true);
     }
   },
   created() {
     this.$electron.ipcRenderer.on("ping", (e, data) => {
-      console.log(data);
       this.$electron.ipcRenderer.send("pong", "pong from render");
     });
     this.$electron.ipcRenderer.on("feed", (e, data) => {
-      console.log(data);
       this.acticles = data;
       this.feedCount[this.curFeed] = this.acticles.length;
-      this.$store.dispatch("setLoadingState", false);
+      this.setLoadingState(false);
     });
     this.$electron.ipcRenderer.on("resize", (e, data) => {
       this.listHeight = data[1] + "px";
