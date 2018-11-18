@@ -30,7 +30,23 @@
               <v-divider v-if="index + 1 < acticles.length" :key="`divider-${index}`"></v-divider>
             </template>
           </v-list>
-          <webview id="foo" :src="webViewSrc" autosize="on"></webview>
+          <webview id="foo" :src="webViewSrc" autosize="on" @did-finish-load="didfinishload"></webview>
+          <v-speed-dial id="floatBtn" v-model="fab" :top="true" :bottom="false" :right="true" :left="false" direction="left" :open-on-hover="true" transition="slide-x-reverse-transition">
+            <v-btn slot="activator" v-model="fab" color="blue darken-2" dark fab>
+              <v-icon>account_circle</v-icon>
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-btn fab dark small color="green">
+              <v-icon>edit</v-icon>
+            </v-btn>
+            <v-btn fab dark small color="indigo">
+              <v-icon>add</v-icon>
+            </v-btn>
+            <v-btn fab dark small color="red">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-speed-dial>
+          <v-progress-linear v-show="this.$store.getters.isLoading" id="loadbar" :indeterminate="true" height="5"></v-progress-linear>
         </v-layout>
       </v-container>
     </v-content>
@@ -41,6 +57,7 @@ export default {
   name: "landing-page",
   data() {
     return {
+      fab: false,
       drawer: true,
       mini: false,
       webViewSrc: "https://www.v2ex.com/",
@@ -78,6 +95,10 @@ export default {
     };
   },
   methods: {
+    didfinishload() {
+      // console.log("didfinishload");
+      this.$store.dispatch("setLoadingState", false);
+    },
     getFavicon(domain) {
       return (
         "http://statics.dnspod.cn/proxy_favicon/_/favicon?domain=" +
@@ -87,11 +108,14 @@ export default {
     acticleClick(index) {
       this.webViewSrc = this.acticles[index].link;
       console.log("click:" + this.webViewSrc);
+      this.$store.dispatch("setLoadingState", true);
     },
     siteItemClick(index) {
       //this.webViewSrc = this.sites[index].src;
       this.curFeed = this.sites[index].feed;
       this.$electron.ipcRenderer.send("fetchFeed", this.curFeed);
+      //this.$store.dispatch({ type: "setLoadingState", isBusy: true });
+      this.$store.dispatch("setLoadingState", true);
     }
   },
   created() {
@@ -103,6 +127,7 @@ export default {
       console.log(data);
       this.acticles = data;
       this.feedCount[this.curFeed] = this.acticles.length;
+      this.$store.dispatch("setLoadingState", false);
     });
     this.$electron.ipcRenderer.on("resize", (e, data) => {
       this.listHeight = data[1] + "px";
@@ -136,6 +161,14 @@ export default {
   /* height: 100%; */
   /* height: 563px; */
   overflow-y: scroll;
+}
+#floatBtn {
+  position: fixed;
+}
+#loadbar {
+  position: fixed;
+  top: 100%;
+  margin-top: -5px;
 }
 </style>
 
