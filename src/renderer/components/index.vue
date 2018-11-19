@@ -30,7 +30,7 @@
               <v-divider v-if="index + 1 < acticles.length" :key="`divider-${index}`"></v-divider>
             </template>
           </v-list>
-          <webview id="foo" :src="webViewSrc" autosize="on" @did-finish-load="didfinishload"></webview>
+          <webview ref="webView" id="foo" :src="webViewSrc" autosize="on" @did-finish-load="didfinishload"></webview>
           <v-speed-dial id="floatBtn" v-model="fab" :top="true" :bottom="false" :right="true" :left="false" direction="left" :open-on-hover="true" transition="slide-x-reverse-transition">
             <v-btn slot="activator" v-model="fab" color="blue darken-2" dark fab>
               <v-icon>account_circle</v-icon>
@@ -39,22 +39,26 @@
             <v-btn fab dark small color="green">
               <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn fab dark small color="indigo">
-              <v-icon>add</v-icon>
+
+            <v-btn fab dark small color="indigo" @click="saveHtml">
+              <v-icon>save</v-icon>
             </v-btn>
             <v-btn fab dark small color="red">
               <v-icon>delete</v-icon>
             </v-btn>
           </v-speed-dial>
-
+          <notifications group="foo" position="bottom right" />
         </v-layout>
       </v-container>
+
     </v-content>
     <v-progress-linear v-show="this.$store.getters.isLoading" id="loadbar" :indeterminate="true" height="5"></v-progress-linear>
+
   </v-app>
 </template>
 <script>
 import { mapActions } from "vuex";
+import Vue from "vue";
 export default {
   name: "landing-page",
   data() {
@@ -93,11 +97,41 @@ export default {
       acticles: [],
       listHeight: "760px",
       curFeed: "",
-      feedCount: {}
+      feedCount: {},
+      appPath: ""
     };
   },
   methods: {
     ...mapActions(["setLoadingState"]),
+    saveHtml() {
+      var path =
+        this.appPath +
+        this.$refs.webView
+          .getURL()
+          .replace(/^.*?:\/\//, "")
+          .replace(/\//g, "_") +
+        ".mhtml";
+      console.log(path);
+      var res = this.$refs.webView
+        .getWebContents()
+        .savePage(path, "MHTML", function(error) {
+          var text = "";
+          var type = "";
+          if (error) {
+            text = error;
+            type = "error";
+          } else {
+            text = "save complete";
+            type = "success";
+          }
+          Vue.notify({
+            group: "foo",
+            title: "savePage",
+            text: text,
+            type: type
+          });
+        });
+    },
     didfinishload() {
       // console.log("didfinishload");
       this.setLoadingState(false);
@@ -122,6 +156,7 @@ export default {
   },
   created() {
     this.$electron.ipcRenderer.on("ping", (e, data) => {
+      this.appPath = data;
       this.$electron.ipcRenderer.send("pong", "pong from render");
     });
     this.$electron.ipcRenderer.on("feed", (e, data) => {

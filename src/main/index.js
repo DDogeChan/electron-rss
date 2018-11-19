@@ -3,6 +3,8 @@ import { fetchFeed } from "./feeds.js";
 import { resolve } from "url";
 import { __await } from "tslib";
 import "../renderer/store";
+var fs = require("fs");
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -42,7 +44,11 @@ function createWindow() {
     mainWindow = null;
   });
   mainWindow.webContents.on("did-finish-load", () => {
-    mainWindow.webContents.send("ping", "whoooooooh!");
+    var path = app.getPath("userData") + "/electron-rss-saved/";
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path);
+    }
+    mainWindow.webContents.send("ping", path);
   });
   mainWindow.on("resize", () => {
     mainWindow.webContents.send("resize", mainWindow.getSize());
