@@ -10,6 +10,10 @@
 // Install `electron-debug` with `devtron`
 require("electron-debug")({ showDevTools: true });
 
+var fs = require("fs");
+path =
+  "/home/chan/.config/google-chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/4.1.5_0";
+
 // Install `vue-devtools`
 require("electron").app.on("ready", () => {
   let installExtension = require("electron-devtools-installer");
@@ -20,9 +24,11 @@ require("electron").app.on("ready", () => {
       console.log("Unable to install `vue-devtools`: \n", err);
     });
   if (process.env.NODE_ENV === "development") {
-    require("electron").BrowserWindow.addDevToolsExtension(
-      "/home/chan/.config/google-chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/4.1.5_0"
-    );
+    fs.exists(path, function(exists) {
+      if (exists) {
+        require("electron").BrowserWindow.addDevToolsExtension(path);
+      }
+    });
   }
 });
 

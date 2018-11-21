@@ -31,7 +31,7 @@ function createWindow() {
     width: 1280
     // frame: false
   });
-
+  mainWindow.setMenu(null);
   mainWindow.loadURL(winURL);
   // mainWindow.webContents.session.setProxy(
   //   { proxyRules: "socks5://127.0.0.1:1080" },
@@ -54,7 +54,7 @@ function createWindow() {
     mainWindow.webContents.send("resize", mainWindow.getSize());
   });
 }
-
+app.commandLine.appendSwitch("--no-proxy-server");
 app.on("ready", createWindow);
 
 app.on("window-all-closed", () => {
