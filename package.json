@@ -18,7 +18,7 @@
   },
   "build": {
     "productName": "electron-rss",
-    "appId": "com.example.yourapp",
+    "appId": "app.fantry.rss",
     "directories": {
       "output": "build"
     },
