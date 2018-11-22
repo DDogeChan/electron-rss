@@ -6,7 +6,7 @@
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
-    "build": "node .electron-vue/build.js && electron-builder --win --linux",
+    "build": "node .electron-vue/build.js && electron-builder --publish onTagOrDraft",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -53,7 +53,9 @@
     }
   },
   "dependencies": {
+    "@koa/cors": "^2.2.2",
     "axios": "^0.18.0",
+    "koa": "^2.6.2",
     "material-design-icons-iconfont": "^4.0.2",
     "rss-parser": "^3.5.3",
     "vue": "^2.5.16",

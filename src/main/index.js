@@ -3,6 +3,7 @@ import { fetchFeed } from "./feeds.js";
 import { resolve } from "url";
 import { __await } from "tslib";
 import "../renderer/store";
+import "./httpserver";
 var fs = require("fs");
 
 /**

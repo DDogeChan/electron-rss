@@ -1,6 +1,6 @@
 <template>
   <v-app class="content">
-    <v-navigation-drawer app v-model="drawer" :mini-variant.sync="mini" mini-variant-width=50 width=200 permanent>
+    <v-navigation-drawer class="nav" app v-model="drawer" :mini-variant.sync="mini" v-on:mouseover.native="mini=false" v-on:mouseleave.native="mini=true" mini-variant-width=50 width=200 permanent>
       <v-list>
         <v-btn icon @click.stop="mini = !mini">
           <v-icon>menu</v-icon>
@@ -8,10 +8,13 @@
         <template v-for="(item, index) in sites">
           <v-list-tile :key="index" ripple :class="{'mini-tile':mini}" @click="siteItemClick(index)">
             <v-list-tile-action>
-              <v-img :src="getFavicon(item.src)" max-width="16px" position="left center"></v-img>
+              <v-badge v-if="feedCount[item.feed]>0&&mini" overlap color="cyan"><span slot="badge">{{feedCount[item.feed]}}</span>
+                <v-img :src="getFavicon(item.src)" width="20px" position="left center"></v-img>
+              </v-badge>
+              <v-img v-else :src="getFavicon(item.src)" max-width="16px" position="left center"></v-img>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-badge v-if="feedCount[item.feed]>0" color="grey"><span slot="badge">{{feedCount[item.feed]}}</span><span v-show="1">{{item.title}}</span></v-badge><span v-else>{{item.title}}</span>
+              <v-badge v-if="feedCount[item.feed]>0" color="cyan"><span slot="badge">{{feedCount[item.feed]}}</span><span>{{item.title}}</span></v-badge><span v-else>{{item.title}}</span>
             </v-list-tile-content>
           </v-list-tile>
           <!-- <v-divider v-if="index + 1 < sites.length" :key="`site-${index}`"></v-divider> -->
@@ -65,7 +68,7 @@ export default {
     return {
       fab: false,
       drawer: true,
-      mini: false,
+      mini: true,
       webViewSrc: "https://www.v2ex.com/",
       sites: [
         {
@@ -104,6 +107,18 @@ export default {
   methods: {
     ...mapActions(["setLoadingState"]),
     saveHtml() {
+      const notification = {
+        title: "基本通知",
+        body: "简短的通知内容"
+      };
+      const myNotification = new window.Notification(
+        notification.title,
+        notification
+      );
+      myNotification.onclick = () => {
+        console.log("通知被点击");
+      };
+
       var path =
         this.appPath +
         this.$refs.webView
@@ -205,6 +220,13 @@ export default {
   top: 100%;
   margin-top: -5px;
   z-index: 99;
+}
+.nav {
+  background-color: hsl(0, 0%, 96%) !important;
+}
+.v-badge__badge {
+  width: 18px !important;
+  height: 18px !important;
 }
 </style>
 

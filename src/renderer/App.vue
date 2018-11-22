@@ -14,6 +14,11 @@ export default {
 /* CSS */
 html {
   height: 100%;
+  font-family: "BlinkMacSystemFont", "Lucida Grande", "Segoe UI", Ubuntu,
+    Cantarell, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: #fff;
 }
 body {
   height: 100%;
