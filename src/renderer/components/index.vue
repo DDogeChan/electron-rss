@@ -110,7 +110,7 @@ export default {
       const notification = {
         appName: "app.fantry.rss",
         title: "基本通知",
-        body: "简短的通知内容"
+        body: "通知内容"
       };
       const myNotification = new window.Notification(
         notification.title,
