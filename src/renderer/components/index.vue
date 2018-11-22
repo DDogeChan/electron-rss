@@ -108,6 +108,7 @@ export default {
     ...mapActions(["setLoadingState"]),
     saveHtml() {
       const notification = {
+        appName: "app.fantry.rss",
         title: "基本通知",
         body: "简短的通知内容"
       };
