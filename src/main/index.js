@@ -4,6 +4,7 @@ import { resolve } from "url";
 import { __await } from "tslib";
 import "../renderer/store";
 import "./httpserver";
+import pkg from "../../package.json";
 var fs = require("fs");
 
 /**
@@ -56,7 +57,9 @@ function createWindow() {
   });
 }
 app.commandLine.appendSwitch("--no-proxy-server");
-app.setAppUserModelId('app.fantry.rss');
+if (process.platform === "win32") {
+  app.setAppUserModelId(pkg.build.appId);
+}
 app.on("ready", createWindow);
 
 app.on("window-all-closed", () => {
