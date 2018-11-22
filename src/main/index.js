@@ -56,6 +56,7 @@ function createWindow() {
   });
 }
 app.commandLine.appendSwitch("--no-proxy-server");
+app.setAppUserModelId('app.fantry.rss');
 app.on("ready", createWindow);
 
 app.on("window-all-closed", () => {
