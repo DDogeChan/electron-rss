@@ -12,7 +12,7 @@ env:
 os:
   - linux
   - osx
-  - windows
+  # - windows
 
 cache:
   directories:
