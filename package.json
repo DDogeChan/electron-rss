@@ -6,7 +6,7 @@
   "license": "GPL-2.0-or-later",
   "main": "./dist/electron/main.js",
   "scripts": {
-    "patch": "npm version patch && git push origin master && git push origin --tags",
+    "patch": "npm version patch && git push github master && git github origin --tags",
     "build": "node .electron-vue/build.js && electron-builder --publish always",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
