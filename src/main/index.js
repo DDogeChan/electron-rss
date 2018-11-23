@@ -7,8 +7,11 @@ import "./httpserver";
 import pkg from "../../package.json";
 var fs = require("fs");
 var path = require("path");
-var iconPath = path.join(__dirname, "iconTemplate.png");
-
+const iconName =
+  process.platform === "win32" ? "windows-icon.png" : "iconTemplate@2x.png";
+//var iconPath = path.join(__static, iconName);
+var iconPath = "./static/img/" + iconName;
+console.log(iconPath);
 var appIcon = null;
 /**
  * Set `__static` path to static files in production
@@ -59,7 +62,8 @@ function createWindow() {
     mainWindow.webContents.send("resize", mainWindow.getSize());
   });
 
-  appIcon = new Tray(nativeImage.createFromPath(iconPath));
+  //appIcon = new Tray(nativeImage.createFromPath(iconPath));
+  appIcon = new Tray(iconPath);
   var contextMenu = Menu.buildFromTemplate([
     { label: "Item1", type: "radio" },
     { label: "Item2", type: "radio" },
