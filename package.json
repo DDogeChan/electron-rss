@@ -1,6 +1,6 @@
 {
   "name": "electron-rss",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "author": "Doge Chan <rezelchan@gmail.com>",
   "description": "An electron-vue project",
   "license": "GPL-2.0-or-later",
