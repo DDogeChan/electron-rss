@@ -6,7 +6,8 @@ import "../renderer/store";
 import "./httpserver";
 import pkg from "../../package.json";
 var fs = require("fs");
-const path = require("path");
+//const path = require("path");
+import iconPath from "../../build/icons/iconTemplate.png";
 
 var appIcon = null;
 /**
@@ -58,8 +59,8 @@ function createWindow() {
     mainWindow.webContents.send("resize", mainWindow.getSize());
   });
 
-  const iconName = "iconTemplate.png";
-  const iconPath = path.join(__dirname, iconName);
+  //const iconName = "iconTemplate.png";
+  //const iconPath = path.join(__dirname, iconName);
   appIcon = new Tray(iconPath);
   var contextMenu = Menu.buildFromTemplate([
     { label: "Item1", type: "radio" },
