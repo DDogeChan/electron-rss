@@ -7,7 +7,7 @@ import "./httpserver";
 import pkg from "../../package.json";
 var fs = require("fs");
 //const path = require("path");
-import iconPath from "../../build/icons/iconTemplate.png";
+const iconPath = require("../../build/icons/iconTemplate.png");
 
 var appIcon = null;
 /**
