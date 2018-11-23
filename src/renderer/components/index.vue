@@ -46,8 +46,8 @@
             <v-btn fab dark small color="indigo" @click="saveHtml">
               <v-icon>save</v-icon>
             </v-btn>
-            <v-btn fab dark small color="red">
-              <v-icon>delete</v-icon>
+            <v-btn fab dark small color="red" @click="switchMode">
+              <v-icon>chrome_reader_mode</v-icon>
             </v-btn>
           </v-speed-dial>
           <notifications group="foo" position="bottom right" />
@@ -62,6 +62,7 @@
 <script>
 import { mapActions } from "vuex";
 import Vue from "vue";
+
 export default {
   name: "landing-page",
   data() {
@@ -106,6 +107,43 @@ export default {
   },
   methods: {
     ...mapActions(["setLoadingState"]),
+    getHash(str) {
+      const crypto = require("crypto");
+      const hash = crypto.createHash("sha1");
+      hash.update(this.$refs.webView.getURL());
+      const hashkey = hash.digest("hex");
+      return hashkey;
+    },
+    switchMode() {
+      console.log("switchMode");
+      const url = this.$refs.webView.getURL();
+      const hashkey = this.getHash(url);
+
+      this.$db.findOne({ key: hashkey }, (err, doc) => {
+        if (doc) {
+          console.log(findone);
+        }
+      });
+
+      var read = require("node-readability");
+      read(url, (err, article, meta) => {
+        var html =
+          '<html><head><meta charset="utf-8"><title>' +
+          article.title +
+          "</title></head><body><h1>" +
+          article.title +
+          "</h1>" +
+          article.content +
+          "</body></html>";
+
+        const doc = { key: hashkey, doc: html };
+        this.$db.insert(doc, function(err, newDoc) {
+          console.log(newDoc);
+        });
+        this.webViewSrc = "data:text/html," + html;
+        article.close();
+      });
+    },
     saveHtml() {
       const notification = {
         title: "基本通知",

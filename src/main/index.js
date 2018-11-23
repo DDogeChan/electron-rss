@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, Tray } from "electron";
 import { fetchFeed } from "./feeds.js";
 import { resolve } from "url";
 import { __await } from "tslib";
@@ -6,7 +6,9 @@ import "../renderer/store";
 import "./httpserver";
 import pkg from "../../package.json";
 var fs = require("fs");
+const path = require("path");
 
+var appIcon = null;
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -55,6 +57,18 @@ function createWindow() {
   mainWindow.on("resize", () => {
     mainWindow.webContents.send("resize", mainWindow.getSize());
   });
+
+  const iconName = "iconTemplate.png";
+  const iconPath = path.join(__dirname, iconName);
+  appIcon = new Tray(iconPath);
+  var contextMenu = Menu.buildFromTemplate([
+    { label: "Item1", type: "radio" },
+    { label: "Item2", type: "radio" },
+    { label: "Item3", type: "radio", checked: true },
+    { label: "Item4", type: "radio" }
+  ]);
+  appIcon.setToolTip("This is my application.");
+  appIcon.setContextMenu(contextMenu);
 }
 app.commandLine.appendSwitch("--no-proxy-server");
 if (process.platform === "win32") {
@@ -63,6 +77,7 @@ if (process.platform === "win32") {
 app.on("ready", createWindow);
 
 app.on("window-all-closed", () => {
+  if (appIcon) appIcon.destroy();
   if (process.platform !== "darwin") {
     app.quit();
   }

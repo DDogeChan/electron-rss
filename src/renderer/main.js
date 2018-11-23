@@ -6,6 +6,7 @@ import router from "./router";
 import store from "./store";
 import "./plugins/vuetify.js";
 import "./plugins/notifications.js";
+import db from "./datastore";
 
 if (!process.env.IS_WEB) Vue.use(require("vue-electron"));
 Vue.http = Vue.prototype.$http = axios;
@@ -18,3 +19,5 @@ new Vue({
   store,
   template: "<App/>"
 }).$mount("#app");
+
+Vue.prototype.$db = db;
