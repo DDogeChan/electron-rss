@@ -23,13 +23,6 @@ let mainConfig = {
       {
         test: /\.node$/,
         use: "node-loader"
-      },
-      {
-        test: /\.(png|...)$/,
-        use: [
-          { loader: "url-loader", options: { limit: 8192 } }
-          // limit => file.size =< 8192 bytes ? DataURI : File
-        ]
       }
     ]
   },

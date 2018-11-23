@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, Tray } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } from "electron";
 import { fetchFeed } from "./feeds.js";
 import { resolve } from "url";
 import { __await } from "tslib";
@@ -6,8 +6,8 @@ import "../renderer/store";
 import "./httpserver";
 import pkg from "../../package.json";
 var fs = require("fs");
-//const path = require("path");
-const iconPath = require("../../build/icons/iconTemplate.png");
+var path = require("path");
+var iconPath = path.join(__dirname, "iconTemplate.png");
 
 var appIcon = null;
 /**
@@ -59,9 +59,7 @@ function createWindow() {
     mainWindow.webContents.send("resize", mainWindow.getSize());
   });
 
-  //const iconName = "iconTemplate.png";
-  //const iconPath = path.join(__dirname, iconName);
-  appIcon = new Tray(iconPath);
+  appIcon = new Tray(nativeImage.createFromPath(iconPath));
   var contextMenu = Menu.buildFromTemplate([
     { label: "Item1", type: "radio" },
     { label: "Item2", type: "radio" },
