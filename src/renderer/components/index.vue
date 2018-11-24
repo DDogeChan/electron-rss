@@ -2,8 +2,11 @@
   <v-app class="content">
     <v-navigation-drawer class="nav" app v-model="drawer" :mini-variant.sync="mini" v-on:mouseover.native="mini=false" v-on:mouseleave.native="mini=true" mini-variant-width=50 width=200 permanent>
       <v-list>
-        <v-btn icon @click.stop="mini = !mini">
+        <!-- <v-btn icon @click.stop="mini = !mini">
           <v-icon>menu</v-icon>
+        </v-btn> -->
+        <v-btn icon @click.stop="dialog=!dialog">
+          <v-icon>add</v-icon>
         </v-btn>
         <template v-for="(item, index) in sites">
           <v-list-tile :key="index" ripple :class="{'mini-tile':mini}" @click="siteItemClick(index)">
@@ -56,6 +59,21 @@
 
     </v-content>
     <v-progress-linear v-show="this.$store.getters.isLoading" id="loadbar" :indeterminate="true" height="5"></v-progress-linear>
+    <v-dialog v-model="dialog" width="500">
+      <v-card>
+        <v-card-title class="headline grey lighten-2" primary-title>
+          Privacy Policy
+        </v-card-title>
+        <v-card-text>
+          <v-text-field label="Title*" required v-model="addTitle"></v-text-field>
+          <v-text-field label="Home Page*" required v-model="addHome"></v-text-field>
+          <v-text-field label="RSS URL*" required v-model="addUrl"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="blue darken-1" flat @click="addFeed">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-app>
 </template>
@@ -67,6 +85,10 @@ export default {
   name: "landing-page",
   data() {
     return {
+      addHome: "",
+      addTitle: "",
+      addUrl: "",
+      dialog: false,
       fab: false,
       drawer: true,
       mini: true,
@@ -107,6 +129,21 @@ export default {
   },
   methods: {
     ...mapActions(["setLoadingState"]),
+    addFeed() {
+      this.sites.push({
+        title: this.addTitle,
+        src: this.addHome,
+        feed: this.addUrl
+      });
+      this.$db.update(
+        { type: "sites" },
+        { type: "sites", data: this.sites },
+        { upsert: true },
+        function(err, numReplaced, upsert) {}
+      );
+
+      this.dialog = false;
+    },
     getHash(str) {
       const crypto = require("crypto");
       const hash = crypto.createHash("sha1");
@@ -190,8 +227,11 @@ export default {
       this.setLoadingState(false);
     },
     getFavicon(domain) {
+      // console.log(domain);
+      // var res = await this.$http.get(domain + "/favicon.ico");
+      // console.log(res.status);
       return (
-        "http://statics.dnspod.cn/proxy_favicon/_/favicon?domain=" +
+        "https://statics.dnspod.cn/proxy_favicon/_/favicon?domain=" +
         domain.split("/")[2] //TODO:提取域名有问题
       );
     },
@@ -219,6 +259,14 @@ export default {
     });
     this.$electron.ipcRenderer.on("resize", (e, data) => {
       this.listHeight = data[1] + "px";
+    });
+  },
+  mounted() {
+    this.$db.findOne({ type: "sites" }, (err, docs) => {
+      if (docs) {
+        //console.log(docs);
+        this.sites = docs.data;
+      }
     });
   }
 };

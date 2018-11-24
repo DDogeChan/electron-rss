@@ -6,12 +6,16 @@ import "../renderer/store";
 import "./httpserver";
 import pkg from "../../package.json";
 var fs = require("fs");
-var path = require("path");
 const iconName =
-  process.platform === "win32" ? "windows-icon.png" : "iconTemplate@2x.png";
-//var iconPath = path.join(__static, iconName);
-var iconPath = "./static/img/" + iconName;
+  process.platform === "win32" ? "windows-icon.png" : "iconTemplate.png";
+var iconPath = "";
+if (process.env.NODE_ENV !== "development") {
+  iconPath = __dirname + "/static/img/" + iconName;
+} else {
+  iconPath = __static + "/img/" + iconName;
+}
 console.log(iconPath);
+
 var appIcon = null;
 /**
  * Set `__static` path to static files in production
@@ -36,8 +40,11 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     height: 760,
     useContentSize: true,
-    width: 1280
+    width: 1280,
     // frame: false
+    webPreferences: {
+      webSecurity: false
+    }
   });
   mainWindow.setMenu(null);
   mainWindow.loadURL(winURL);
