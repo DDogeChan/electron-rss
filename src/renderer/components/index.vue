@@ -95,26 +95,31 @@ export default {
       webViewSrc: "https://www.v2ex.com/",
       sites: [
         {
+          index: 0,
           title: "V2ex",
           src: "https://www.v2ex.com/",
           feed: "https://www.v2ex.com/index.xml"
         },
         {
+          index: 1,
           title: "B站人文",
           src: "https://www.bilibili.com/",
           feed: "https://rsshub.app/bilibili/partion/124"
         },
         {
+          index: 2,
           title: "微博热搜",
           src: "https://www.weibo.com/",
           feed: "https://rsshub.app/weibo/search/hot"
         },
         {
+          index: 3,
           title: "掘金",
           src: "https://juejin.im/",
           feed: "https://rsshub.app/juejin/category/frontend"
         },
         {
+          index: 4,
           title: "草榴",
           src: "http://www.t66y.com",
           feed: "https://rsshub.app/t66y/7/2"
@@ -131,6 +136,7 @@ export default {
     ...mapActions(["setLoadingState"]),
     addFeed() {
       this.sites.push({
+        index: this.sites.length,
         title: this.addTitle,
         src: this.addHome,
         feed: this.addUrl
@@ -257,6 +263,11 @@ export default {
       this.feedCount[this.curFeed] = this.acticles.length;
       this.setLoadingState(false);
     });
+    this.$electron.ipcRenderer.on("feeds", (e, data) => {
+      console.log("ipcRenderer on feeds");
+      console.log(data);
+      this.feedCount[data.site] = data.data.length;
+    });
     this.$electron.ipcRenderer.on("resize", (e, data) => {
       this.listHeight = data[1] + "px";
     });
@@ -264,8 +275,15 @@ export default {
   mounted() {
     this.$db.findOne({ type: "sites" }, (err, docs) => {
       if (docs) {
-        //console.log(docs);
         this.sites = docs.data;
+      } else {
+        console.log("mounted with no data");
+        this.$db.update(
+          { type: "sites" },
+          { type: "sites", data: this.sites },
+          { upsert: true },
+          function(err, numReplaced, upsert) {}
+        );
       }
     });
   }

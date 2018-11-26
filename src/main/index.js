@@ -1,4 +1,12 @@
-import { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  Tray,
+  nativeImage,
+  session
+} from "electron";
 import { fetchFeed } from "./feeds.js";
 import { resolve } from "url";
 import { __await } from "tslib";
@@ -6,6 +14,8 @@ import "../renderer/store";
 import "./httpserver";
 import pkg from "../../package.json";
 var fs = require("fs");
+import { setSchedules } from "./schedules";
+
 const iconName =
   process.platform === "win32" ? "windows-icon.png" : "iconTemplate.png";
 var iconPath = "";
@@ -14,7 +24,7 @@ if (process.env.NODE_ENV !== "development") {
 } else {
   iconPath = __static + "/img/" + iconName;
 }
-console.log(iconPath);
+//console.log(iconPath);
 
 var appIcon = null;
 /**
@@ -47,13 +57,24 @@ function createWindow() {
     }
   });
   mainWindow.setMenu(null);
-  mainWindow.loadURL(winURL);
-  // mainWindow.webContents.session.setProxy(
-  //   { proxyRules: "socks5://127.0.0.1:1080" },
-  //   function() {
-  //     mainWindow.loadURL(winURL);
-  //   }
-  // );
+  //mainWindow.loadURL(winURL);
+  session.defaultSession.allowNTLMCredentialsForDomains("*"); //to access internal sites
+  mainWindow.webContents.session.setProxy(
+    {
+      //pacScript: "file:///" + __dirname + "/proxy.js",
+      pacScript: "file:///home/chan/code/electron-rss/src/main/proxy.js",
+      proxyRules: "socks5://127.0.0.1:1080,direct://",
+      proxyBypassRules: "localhost"
+    },
+    function() {
+      // const TEST_URL = "https://www.google.com";
+      // mainWindow.webContents.session.resolveProxy(TEST_URL, function(x) {
+      //   console.log(x);
+      // });
+      mainWindow.loadURL(winURL);
+    }
+  );
+  setSchedules(mainWindow);
 
   mainWindow.on("closed", () => {
     mainWindow = null;
@@ -80,7 +101,7 @@ function createWindow() {
   appIcon.setToolTip("This is my application.");
   appIcon.setContextMenu(contextMenu);
 }
-app.commandLine.appendSwitch("--no-proxy-server");
+//app.commandLine.appendSwitch("--no-proxy-server");
 if (process.platform === "win32") {
   app.setAppUserModelId(pkg.build.appId);
 }
@@ -104,12 +125,10 @@ function sleep(ms) {
 }
 
 ipcMain.on("pong", (e, data) => {
-  console.log(data);
   async function sendping() {
     let res = await sleep(1000);
     //e.sender.send("ping", "ping from main");
     let feed = await fetchFeed("https://www.v2ex.com/index.xml");
-    console.log(feed.items.length);
     e.sender.send("feed", feed.items);
   }
   sendping();

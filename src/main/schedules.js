@@ -1,5 +1,11 @@
 var schedule = require("node-schedule");
-
-var j = schedule.scheduleJob("*/1 * * * *", function() {
-  console.log("The answer to life, the universe, and everything!");
-});
+import { fetchFeed, fetchAll } from "./feeds";
+var main = null;
+function setSchedules(obj) {
+  main = obj;
+  schedule.scheduleJob("*/1 * * * *", function() {
+    console.log("scheduleJob run!");
+    fetchAll(main);
+  });
+}
+export { setSchedules };
