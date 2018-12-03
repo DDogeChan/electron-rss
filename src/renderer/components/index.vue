@@ -258,7 +258,7 @@ export default {
   methods: {
     ...mapActions(["setLoadingState"]),
     openExternal() {
-      shell.openExternal(this.webViewSrc);
+      shell.openExternal(this.$refs.webView.getURL());
     },
     addFeed() {
       this.sites.push({
