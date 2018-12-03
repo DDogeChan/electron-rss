@@ -1,23 +1,57 @@
 <template>
   <v-app class="content">
-    <v-navigation-drawer class="nav" app v-model="drawer" :mini-variant.sync="mini" v-on:mouseover.native="mini=false" v-on:mouseleave.native="mini=true" mini-variant-width=50 width=200 permanent>
+    <v-navigation-drawer
+      class="nav"
+      app
+      v-model="drawer"
+      :mini-variant.sync="mini"
+      v-on:mouseover.native="mini=false"
+      v-on:mouseleave.native="mini=true"
+      mini-variant-width=50
+      width=200
+      permanent
+    >
       <v-list>
         <!-- <v-btn icon @click.stop="mini = !mini">
           <v-icon>menu</v-icon>
         </v-btn> -->
-        <v-btn icon @click.stop="dialog=!dialog">
+        <v-btn
+          icon
+          @click.stop="dialog=!dialog"
+        >
           <v-icon>add</v-icon>
         </v-btn>
         <template v-for="(item, index) in sites">
-          <v-list-tile :key="index" ripple :class="{'mini-tile':mini}" @click="siteItemClick(index)">
+          <v-list-tile
+            :key="index"
+            ripple
+            :class="{'mini-tile':mini}"
+            @click="siteItemClick(index)"
+          >
             <v-list-tile-action>
-              <v-badge v-if="feedCount[item.feed]>0&&mini" overlap color="cyan"><span slot="badge">{{feedCount[item.feed]}}</span>
-                <v-img :src="getFavicon(item.src)" width="20px" position="left center"></v-img>
+              <v-badge
+                v-if="feedCount[item.feed]>0&&mini"
+                overlap
+                color="cyan"
+              ><span slot="badge">{{feedCount[item.feed]}}</span>
+                <v-img
+                  :src="getFavicon(item.src)"
+                  width="20px"
+                  position="left center"
+                ></v-img>
               </v-badge>
-              <v-img v-else :src="getFavicon(item.src)" max-width="16px" position="left center"></v-img>
+              <v-img
+                v-else
+                :src="getFavicon(item.src)"
+                max-width="16px"
+                position="left center"
+              ></v-img>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-badge v-if="feedCount[item.feed]>0" color="cyan"><span slot="badge">{{feedCount[item.feed]}}</span><span>{{item.title}}</span></v-badge><span v-else>{{item.title}}</span>
+              <v-badge
+                v-if="feedCount[item.feed]>0"
+                color="cyan"
+              ><span slot="badge">{{feedCount[item.feed]}}</span><span>{{item.title}}</span></v-badge><span v-else>{{item.title}}</span>
             </v-list-tile-content>
           </v-list-tile>
           <!-- <v-divider v-if="index + 1 < sites.length" :key="`site-${index}`"></v-divider> -->
@@ -26,51 +60,139 @@
     </v-navigation-drawer>
 
     <v-content>
-      <v-container id="main-container" fill-height>
-        <v-layout justify-start row fill-height>
-          <v-list two-line id="acticle-list" :style="{height:listHeight}">
+      <v-container
+        id="main-container"
+        fill-height
+      >
+        <v-layout
+          justify-start
+          row
+          fill-height
+        >
+          <v-list
+            two-line
+            id="acticle-list"
+            :style="{height:listHeight}"
+          >
             <template v-for="(item, index) in acticles">
-              <v-list-tile :key="index" ripple @click="acticleClick(index)">
+              <v-list-tile
+                :key="index"
+                ripple
+                @click="acticleClick(index)"
+              >
                 <v-list-tile-content id="acticle">{{item.title}}</v-list-tile-content>
               </v-list-tile>
-              <v-divider v-if="index + 1 < acticles.length" :key="`divider-${index}`"></v-divider>
+              <v-divider
+                v-if="index + 1 < acticles.length"
+                :key="`divider-${index}`"
+              ></v-divider>
             </template>
           </v-list>
-          <webview ref="webView" id="foo" :src="webViewSrc" autosize="on" @did-finish-load="didfinishload"></webview>
-          <v-speed-dial id="floatBtn" v-model="fab" :top="true" :bottom="false" :right="true" :left="false" direction="left" :open-on-hover="true" transition="slide-x-reverse-transition">
-            <v-btn slot="activator" v-model="fab" color="blue darken-2" dark fab>
+          <webview
+            ref="webView"
+            id="foo"
+            :src="webViewSrc"
+            autosize="on"
+            @did-finish-load="didfinishload"
+          ></webview>
+          <v-speed-dial
+            id="floatBtn"
+            v-model="fab"
+            :top="true"
+            :bottom="false"
+            :right="true"
+            :left="false"
+            direction="left"
+            :open-on-hover="true"
+            transition="slide-x-reverse-transition"
+          >
+            <v-btn
+              slot="activator"
+              v-model="fab"
+              color="blue darken-2"
+              dark
+              fab
+            >
               <v-icon>account_circle</v-icon>
               <v-icon>close</v-icon>
             </v-btn>
-            <v-btn fab dark small color="green">
-              <v-icon>edit</v-icon>
+            <v-btn
+              fab
+              dark
+              small
+              color="green"
+              @click="openExternal"
+            >
+              <v-icon>open_in_browser</v-icon>
             </v-btn>
 
-            <v-btn fab dark small color="indigo" @click="saveHtml">
+            <v-btn
+              fab
+              dark
+              small
+              color="indigo"
+              @click="saveHtml"
+            >
               <v-icon>save</v-icon>
             </v-btn>
-            <v-btn fab dark small color="red" @click="switchMode">
+            <v-btn
+              fab
+              dark
+              small
+              color="red"
+              @click="switchMode"
+            >
               <v-icon>chrome_reader_mode</v-icon>
             </v-btn>
           </v-speed-dial>
-          <notifications group="foo" position="bottom right" />
+          <notifications
+            group="foo"
+            position="bottom right"
+          />
         </v-layout>
       </v-container>
 
     </v-content>
-    <v-progress-linear v-show="this.$store.getters.isLoading" id="loadbar" :indeterminate="true" height="5"></v-progress-linear>
-    <v-dialog v-model="dialog" width="500">
+    <v-progress-linear
+      v-show="this.$store.getters.isLoading"
+      id="loadbar"
+      :indeterminate="true"
+      height="5"
+    ></v-progress-linear>
+    <v-dialog
+      v-model="dialog"
+      width="500"
+    >
       <v-card>
-        <v-card-title class="headline grey lighten-2" primary-title>
+        <v-card-title
+          class="headline grey lighten-2"
+          primary-title
+        >
           Privacy Policy
         </v-card-title>
         <v-card-text>
-          <v-text-field label="Title*" required v-model="addTitle"></v-text-field>
-          <v-text-field label="Home Page*" required v-model="addHome"></v-text-field>
-          <v-text-field label="RSS URL*" required v-model="addUrl"></v-text-field>
+          <v-text-field
+            label="Title*"
+            required
+            v-model="addTitle"
+          ></v-text-field>
+          <v-text-field
+            label="Home Page*"
+            required
+            v-model="addHome"
+          ></v-text-field>
+          <v-text-field
+            label="RSS URL*"
+            required
+            v-model="addUrl"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="blue darken-1" flat @click="addFeed">Save</v-btn>
+          <v-btn
+            color="blue darken-1"
+            flat
+            @click="addFeed"
+          >Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -80,6 +202,7 @@
 <script>
 import { mapActions } from "vuex";
 import Vue from "vue";
+import { shell } from "electron";
 
 export default {
   name: "landing-page",
@@ -134,6 +257,9 @@ export default {
   },
   methods: {
     ...mapActions(["setLoadingState"]),
+    openExternal() {
+      shell.openExternal(this.webViewSrc);
+    },
     addFeed() {
       this.sites.push({
         index: this.sites.length,
