@@ -1,0 +1,6 @@
+{"url":"https://rsshub.app/juejin/category/frontend","refresh":30000,"dbname":"36dbb0ed2bc68faa72613de96895db9f957c5c76","_id":"Y6ypPLPRebLVPsio"}
+{"url":"https://rsshub.app/t66y/7/2","refresh":30000,"dbname":"c70ace83a14c29644620a2faaa334452e2b2481b","_id":"cZNWCIJt2ZOvDErO"}
+{"url":"https://rsshub.app/bilibili/partion/124","refresh":30000,"dbname":"4b6be437c361a87b02a219cc27ae924640bec673","_id":"dmG4zO6340o6sjcE"}
+{"url":"https://rsshub.app/weibo/search/hot","refresh":20000,"dbname":"fbeb918ab857069d881f763092278a7665e32ec8","_id":"hiEHDg18Aw80wq3T"}
+{"url":"https://www.v2ex.com/index.xml","refresh":20000,"dbname":"44d2cf276c2c48308e2142da5d958c8f66e0baf8","_id":"l2G87C5kjmsRd5rQ"}
+{"$$indexCreated":{"fieldName":"url","unique":true,"sparse":false}}
