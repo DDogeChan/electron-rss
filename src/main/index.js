@@ -74,7 +74,7 @@ function createWindow() {
       mainWindow.loadURL(winURL);
     }
   );
-  setSchedules(mainWindow);
+  //setSchedules(mainWindow);
 
   mainWindow.on("closed", () => {
     mainWindow = null;
@@ -91,14 +91,24 @@ function createWindow() {
   });
 
   //appIcon = new Tray(nativeImage.createFromPath(iconPath));
+  function trayClick(menuItem, browserWindow, event) {
+    console.log(menuItem);
+    console.log(browserWindow);
+    console.log(event);
+  }
   appIcon = new Tray(iconPath);
   var contextMenu = Menu.buildFromTemplate([
-    { label: "Item1", type: "radio" },
-    { label: "Item2", type: "radio" },
-    { label: "Item3", type: "radio", checked: true },
-    { label: "Item4", type: "radio" }
+    { label: "Item1", type: "normal", click: trayClick },
+    {
+      label: "Exit",
+      type: "normal",
+      click: () => {
+        app.isQuiting = true;
+        app.quit();
+      }
+    }
   ]);
-  appIcon.setToolTip("This is my application.");
+  appIcon.setToolTip("electronRss.");
   appIcon.setContextMenu(contextMenu);
 }
 //app.commandLine.appendSwitch("--no-proxy-server");

@@ -80,7 +80,10 @@
                 ripple
                 @click="acticleClick(index)"
               >
-                <v-list-tile-content id="acticle">{{item.title}}</v-list-tile-content>
+                <v-list-tile-content id="acticle">
+                  <v-list-tile-sub-title class="text--primary">{{item.title}}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title class="text--date">{{item.pubDate|dayjs}}</v-list-tile-sub-title>
+                </v-list-tile-content>
               </v-list-tile>
               <v-divider
                 v-if="index + 1 < acticles.length"
@@ -112,8 +115,9 @@
               color="blue darken-2"
               dark
               fab
+              small
             >
-              <v-icon>account_circle</v-icon>
+              <v-icon>menu</v-icon>
               <v-icon>close</v-icon>
             </v-btn>
             <v-btn
@@ -307,7 +311,7 @@ export default {
 
         const doc = { key: hashkey, doc: html };
         this.$db.insert(doc, function(err, newDoc) {
-          console.log(newDoc);
+          //console.log(newDoc);
         });
         this.webViewSrc = "data:text/html," + html;
         article.close();
@@ -382,6 +386,7 @@ export default {
   created() {
     this.$electron.ipcRenderer.on("ping", (e, data) => {
       this.appPath = data;
+      console.log(this.appPath);
       this.$electron.ipcRenderer.send("pong", "pong from render");
     });
     this.$electron.ipcRenderer.on("feed", (e, data) => {
@@ -390,8 +395,8 @@ export default {
       this.setLoadingState(false);
     });
     this.$electron.ipcRenderer.on("feeds", (e, data) => {
-      console.log("ipcRenderer on feeds");
-      console.log(data);
+      //console.log("ipcRenderer on feeds");
+      //console.log(data);
       this.feedCount[data.site] = data.data.length;
     });
     this.$electron.ipcRenderer.on("resize", (e, data) => {
@@ -434,10 +439,10 @@ export default {
   max-width: 100% !important;
 }
 #acticle {
-  display: -webkit-box;
+  /* display: -webkit-box; */
 }
 #acticle-list {
-  max-width: 300px;
+  max-width: 320px;
   /* height: 100%; */
   /* height: 563px; */
   overflow-y: scroll;
@@ -457,6 +462,28 @@ export default {
 .v-badge__badge {
   width: 18px !important;
   height: 18px !important;
+}
+.v-list__tile {
+  padding: 0 8px !important;
+}
+.text--primary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  white-space: normal !important;
+  font-size: 16px !important;
+}
+.text--date {
+  font-size: 12px !important;
+  margin-top: auto;
+  margin-bottom: 0;
+  margin-left: auto;
+  margin-right: 0;
+  width: auto !important;
+}
+.v-list--two-line .v-list__tile {
+  height: auto !important;
 }
 </style>
 
